@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SG FOREVER - Paquetería Express</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <h1>SG FOREVER</h1>
+                <p class="tagline">Tus paquetes, nuestro compromiso</p>
+            </div>
+            <nav class="nav">
+                <ul>
+                    <li><a href="#inicio">Inicio</a></li>
+                    <li><a href="#rastreo">Rastrear</a></li>
+                    <li><a href="#servicios">Servicios</a></li>
+                    <li><a href="#contacto">Contacto</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="inicio">
+        <div class="container">
+            <h2>Envíos Rápidos y Seguros</h2>
+            <p>Conectamos tu negocio con tus clientes a nivel nacional e internacional</p>
+            <button class="cta-button">Comienza Ahora</button>
+        </div>
+    </section>
+
+    <!-- Rastreo Section -->
+    <section class="rastreo" id="rastreo">
+        <div class="container">
+            <h2>Rastrear tu Envío</h2>
+            <div class="search-box">
+                <input 
+                    type="text" 
+                    id="numeroGuia" 
+                    placeholder="Ingresa tu número de guía..." 
+                    maxlength="20"
+                >
+                <button onclick="rastrearPaquete()">Rastrear</button>
+            </div>
+            <div id="resultadoRastreo" class="resultado-rastreo" style="display: none;">
+                <div class="estado-paquete">
+                    <h3 id="numeroMostrado"></h3>
+                    <div class="timeline">
+                        <div class="evento">
+                            <span class="fecha">2026-06-11</span>
+                            <p class="estado-texto">Paquete entregado</p>
+                        </div>
+                        <div class="evento">
+                            <span class="fecha">2026-06-10</span>
+                            <p class="estado-texto">En camino a destino</p>
+                        </div>
+                        <div class="evento">
+                            <span class="fecha">2026-06-09</span>
+                            <p class="estado-texto">Recolectado de bodega</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cotizador Section -->
+    <section class="cotizador" id="cotizar">
+        <div class="container">
+            <h2>Cotiza tu Envío</h2>
+            <form class="form-cotizador" onsubmit="cotizar(event)">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="origen">Origen (Ciudad):</label>
+                        <input type="text" id="origen" placeholder="Ej: México" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="destino">Destino (Ciudad):</label>
+                        <input type="text" id="destino" placeholder="Ej: Guadalajara" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="peso">Peso (kg):</label>
+                        <input type="number" id="peso" placeholder="0.5" step="0.1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="servicio">Tipo de Servicio:</label>
+                        <select id="servicio" required>
+                            <option value="express">Express (24-48 hrs)</option>
+                            <option value="regular">Regular (3-5 días)</option>
+                            <option value="economico">Económico (7-10 días)</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="submit-button">Cotizar Ahora</button>
+            </form>
+            <div id="resultadoCotizacion" class="resultado-cotizacion" style="display: none;">
+                <h3>Cotización</h3>
+                <p>Costo estimado: <span id="costoFinal"></span></p>
+                <button class="checkout-button">Proceder al Pago</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Servicios Section -->
+    <section class="servicios" id="servicios">
+        <div class="container">
+            <h2>Nuestros Servicios</h2>
+            <div class="servicios-grid">
+                <div class="servicio-card">
+                    <div class="icon">📦</div>
+                    <h3>Envíos Nacionales</h3>
+                    <p>Llega a cualquier parte del país en 24-48 horas con nuestro servicio express</p>
+                </div>
+                <div class="servicio-card">
+                    <div class="icon">🌍</div>
+                    <h3>Envíos Internacionales</h3>
+                    <p>Conectamos con más de 200 países. Seguimiento en tiempo real</p>
+                </div>
+                <div class="servicio-card">
+                    <div class="icon">🏪</div>
+                    <h3>Recolección en Tienda</h3>
+                    <p>Recogemos tus paquetes directamente en tu negocio</p>
+                </div>
+                <div class="servicio-card">
+                    <div class="icon">🔒</div>
+                    <h3>Seguros Especiales</h3>
+                    <p>Protege tus envíos con coberturas hasta $100,000 MXN</p>
+                </div>
+                <div class="servicio-card">
+                    <div class="icon">📱</div>
+                    <h3>App Móvil</h3>
+                    <p>Descarga nuestra app para rastrear en cualquier momento</p>
+                </div>
+                <div class="servicio-card">
+                    <div class="icon">💳</div>
+                    <h3>Planes Corporativos</h3>
+                    <p>Descuentos especiales para empresas y comercios</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sucursales Section -->
+    <section class="sucursales">
+        <div class="container">
+            <h2>Nuestras Sucursales</h2>
+            <div class="sucursales-grid">
+                <div class="sucursal">
+                    <h4>📍 Mexico D.F.</h4>
+                    <p>Av. Paseo de la Reforma 505</p>
+                    <p>Teléfono: +52 (55) 1234-5678</p>
+                </div>
+                <div class="sucursal">
+                    <h4>📍 Guadalajara</h4>
+                    <p>Calle López Mateos 1250</p>
+                    <p>Teléfono: +52 (33) 1234-5678</p>
+                </div>
+                <div class="sucursal">
+                    <h4>📍 Monterrey</h4>
+                    <p>Avenida Santa María 800</p>
+                    <p>Teléfono: +52 (81) 1234-5678</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contacto Section -->
+    <section class="contacto" id="contacto">
+        <div class="container">
+            <h2>Contacto</h2>
+            <div class="contacto-grid">
+                <div class="contacto-info">
+                    <h3>Información de Contacto</h3>
+                    <p><strong>Teléfono:</strong> 1-800-SG-FOREVER (1-800-74-3367)</p>
+                    <p><strong>Email:</strong> contacto@sgforever.com.mx</p>
+                    <p><strong>Atención al Cliente:</strong> Lunes a Domingo 7am - 10pm</p>
+                    <div class="redes-sociales">
+                        <a href="#" title="Facebook">f</a>
+                        <a href="#" title="Twitter">𝕏</a>
+                        <a href="#" title="Instagram">📷</a>
+                        <a href="#" title="WhatsApp">💬</a>
+                    </div>
+                </div>
+                <form class="contacto-form" onsubmit="enviarMensaje(event)">
+                    <input type="text" placeholder="Tu nombre" required>
+                    <input type="email" placeholder="Tu email" required>
+                    <textarea placeholder="Tu mensaje" rows="5" required></textarea>
+                    <button type="submit">Enviar</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2026 SG FOREVER. Todos los derechos reservados.</p>
+            <div class="footer-links">
+                <a href="#">Términos de Servicio</a>
+                <a href="#">Política de Privacidad</a>
+                <a href="#">Preguntas Frecuentes</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
