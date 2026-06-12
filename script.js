@@ -1,94 +1,186 @@
-// Función para rastrear paquete
-function rastrearPaquete() {
-    const numeroGuia = document.getElementById('numeroGuia').value.trim();
+// Array para almacenar códigos generados
+let codigosGenerados = [];
+
+// Función para generar código de barras
+function generarCodigoBarras(event) {
+    event.preventDefault();
     
-    if (!numeroGuia) {
-        alert('Por favor ingresa un número de guía');
+    const nombre = document.getElementById('nombre').value.trim();
+    const codigo = document.getElementById('codigo').value.trim();
+    const descripcion = document.getElementById('descripcion').value.trim();
+    
+    if (!nombre || !codigo) {
+        alert('Por favor completa nombre y código');
         return;
     }
     
-    // Simular búsqueda (en una aplicación real, esto haría una petición al servidor)
-    const resultadoDiv = document.getElementById('resultadoRastreo');
-    const numeroMostrado = document.getElementById('numeroMostrado');
+    // Mostrar resultado
+    const resultadoDiv = document.getElementById('resultadoCodigoBarras');
+    const nombreProducto = document.getElementById('nombreProducto');
+    const codigoTexto = document.getElementById('codigoTexto');
     
-    numeroMostrado.textContent = `Guía: ${numeroGuia}`;
+    nombreProducto.textContent = nombre;
+    codigoTexto.textContent = `Código: ${codigo}`;
     resultadoDiv.style.display = 'block';
     
-    // Scroll al resultado
-    resultadoDiv.scrollIntoView({ behavior: 'smooth' });
-}
-
-// Función para cotizar envío
-function cotizar(event) {
-    event.preventDefault();
-    
-    const origen = document.getElementById('origen').value;
-    const destino = document.getElementById('destino').value;
-    const peso = parseFloat(document.getElementById('peso').value);
-    const servicio = document.getElementById('servicio').value;
-    
-    // Cálculo de costo base por km (simulado)
-    const costoBase = 50; // MXN base
-    let multiplicador = 1;
-    
-    // Ajustar multiplicador según el servicio
-    if (servicio === 'express') {
-        multiplicador = 2;
-    } else if (servicio === 'regular') {
-        multiplicador = 1.2;
-    } else if (servicio === 'economico') {
-        multiplicador = 0.8;
+    // Generar código de barras con JsBarcode
+    try {
+        JsBarcode("#barcode", codigo, {
+            format: "CODE128",
+            width: 2,
+            height: 100,
+            displayValue: true
+        });
+    } catch (e) {
+        alert('Error al generar código de barras');
+        console.error(e);
     }
     
-    // Costo según peso (0.50 MXN por kg)
-    const costoPeso = peso * 50;
-    
-    // Costo total (aproximado)
-    const costoFinal = Math.round((costoBase + costoPeso) * multiplicador);
-    
-    // Mostrar resultado
-    const resultadoDiv = document.getElementById('resultadoCotizacion');
-    const costoFinalSpan = document.getElementById('costoFinal');
-    
-    costoFinalSpan.textContent = `$${costoFinal} MXN`;
-    resultadoDiv.style.display = 'block';
-    
     // Scroll al resultado
     resultadoDiv.scrollIntoView({ behavior: 'smooth' });
 }
 
-// Función para enviar mensaje de contacto
-function enviarMensaje(event) {
-    event.preventDefault();
+// Función para agregar a lista
+function agregarALista() {
+    const nombre = document.getElementById('nombre').value.trim();
+    const codigo = document.getElementById('codigo').value.trim();
+    const descripcion = document.getElementById('descripcion').value.trim();
     
-    const form = event.target;
-    const nombre = form.querySelector('input[type="text"]').value;
-    const email = form.querySelector('input[type="email"]').value;
-    const mensaje = form.querySelector('textarea').value;
+    if (!nombre || !codigo) {
+        alert('Por favor completa nombre y código');
+        return;
+    }
     
-    // Simular envío (en una aplicación real, esto haría una petición al servidor)
-    alert(`¡Gracias ${nombre}! Tu mensaje ha sido enviado correctamente.\nNos pondremos en contacto a ${email} pronto.`);
+    // Agregar a array
+    codigosGenerados.push({
+        nombre: nombre,
+        codigo: codigo,
+        descripcion: descripcion,
+        fecha: new Date().toLocaleDateString('es-PE')
+    });
+    
+    // Actualizar tabla
+    actualizarTabla();
+    
+    // Mostrar sección de lista
+    document.getElementById('listaCodigosSection').style.display = 'block';
     
     // Limpiar formulario
-    form.reset();
+    document.getElementById('nombre').value = '';
+    document.getElementById('codigo').value = '';
+    document.getElementById('descripcion').value = '';
+    
+    alert('✓ Código agregado a la lista');
 }
 
-// Agregar funcionalidad al botón CTA (Comienza Ahora)
+// Función para actualizar tabla
+function actualizarTabla() {
+    const tbody = document.getElementById('cuerpoTabla');
+    tbody.innerHTML = '';
+    
+    codigosGenerados.forEach((item, index) => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${item.nombre}</td>
+            <td>${item.codigo}</td>
+            <td>${item.descripcion}</td>
+            <td>
+                <button class="btn-eliminar" onclick="eliminarDeLista(${index})">🗑️</button>
+            </td>
+        `;
+        tbody.appendChild(row);
+    });
+}
+
+// Función para eliminar de lista
+function eliminarDeLista(index) {
+    codigosGenerados.splice(index, 1);
+    actualizarTabla();
+    
+    if (codigosGenerados.length === 0) {
+        document.getElementById('listaCodigosSection').style.display = 'none';
+    }
+}
+
+// Función para limpiar lista
+function limpiarLista() {
+    if (confirm('¿Deseas limpiar toda la lista?')) {
+        codigosGenerados = [];
+        document.getElementById('listaCodigosSection').style.display = 'none';
+        alert('Lista limpiada');
+    }
+}
+
+// Función para descargar código de barras como imagen
+function descargarCodigoBarras() {
+    const svg = document.getElementById('barcode');
+    const codigo = document.getElementById('codigo').value;
+    
+    if (!svg.querySelector('svg')) {
+        alert('Primero genera un código de barras');
+        return;
+    }
+    
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    const svgData = new XMLSerializer().serializeToString(svg);
+    const img = new Image();
+    
+    img.onload = function() {
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0);
+        const link = document.createElement('a');
+        link.href = canvas.toDataURL('image/png');
+        link.download = `codigo_barras_${codigo}.png`;
+        link.click();
+        alert('✓ Código de barras descargado');
+    };
+    
+    img.src = 'data:image/svg+xml;base64,' + btoa(svgData);
+}
+
+// Función para exportar a Excel
+function exportarAExcel() {
+    if (codigosGenerados.length === 0) {
+        alert('No hay códigos para exportar');
+        return;
+    }
+    
+    // Crear libro de trabajo
+    const wb = XLSX.utils.book_new();
+    
+    // Convertir datos a hoja de cálculo
+    const ws = XLSX.utils.json_to_sheet(codigosGenerados, {
+        header: ['nombre', 'codigo', 'descripcion', 'fecha'],
+        defval: ''
+    });
+    
+    // Ajustar ancho de columnas
+    ws['!cols'] = [
+        { wch: 30 },
+        { wch: 20 },
+        { wch: 40 },
+        { wch: 15 }
+    ];
+    
+    // Agregar hoja al libro
+    XLSX.utils.book_append_sheet(wb, ws, 'Códigos de Barras');
+    
+    // Descargar archivo
+    XLSX.writeFile(wb, `SG_FOREVER_Codigos_${new Date().toLocaleDateString('es-PE')}.xlsx`);
+    alert('✓ Archivo Excel descargado');
+}
+
+// Agregar funcionalidad al botón CTA
 document.addEventListener('DOMContentLoaded', function() {
     const ctaButton = document.querySelector('.cta-button');
     
     if (ctaButton) {
         ctaButton.addEventListener('click', function() {
-            document.getElementById('cotizar').scrollIntoView({ behavior: 'smooth' });
+            document.getElementById('generador').scrollIntoView({ behavior: 'smooth' });
         });
     }
-    
-    // Permitir presionar Enter en el buscador de rastreo
-    document.getElementById('numeroGuia').addEventListener('keypress', function(event) {
-        if (event.key === 'Enter') {
-            rastrearPaquete();
-        }
-    });
 });
 
 // Animación de entrada para elementos al hacer scroll
@@ -106,14 +198,16 @@ const observer = new IntersectionObserver(function(entries) {
     });
 }, observerOptions);
 
-// Aplicar observer a tarjetas de servicios
+// Aplicar observer a elementos
 document.addEventListener('DOMContentLoaded', function() {
-    const cards = document.querySelectorAll('.servicio-card, .sucursal');
-    cards.forEach(card => {
-        card.style.opacity = '0';
-        card.style.transform = 'translateY(20px)';
-        card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-        observer.observe(card);
+    const elements = document.querySelectorAll('.servicio-card, .sucursal, .resultado-codigo');
+    elements.forEach(el => {
+        if (el) {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(el);
+        }
     });
 });
 
@@ -139,9 +233,17 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Verificar que el número de guía solo contenga caracteres válidos
-document.getElementById('numeroGuia').addEventListener('input', function() {
-    this.value = this.value.replace(/[^a-zA-Z0-9]/g, '');
-});
+// Función para enviar mensaje de contacto
+function enviarMensaje(event) {
+    event.preventDefault();
+    
+    const form = event.target;
+    const nombre = form.querySelector('input[type="text"]').value;
+    const email = form.querySelector('input[type="email"]').value;
+    const mensaje = form.querySelector('textarea').value;
+    
+    alert(`¡Gracias ${nombre}! Tu mensaje ha sido enviado correctamente.\nNos pondremos en contacto a ${email} pronto.`);
+    form.reset();
+}
 
-console.log('SG FOREVER - Sistema de Paquetería Cargado Exitosamente');
+console.log('SG FOREVER - Generador de Códigos de Barras Cargado Exitosamente');

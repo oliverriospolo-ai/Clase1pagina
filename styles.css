@@ -133,125 +133,27 @@ body {
     box-shadow: 0 6px 20px rgba(255, 107, 53, 0.6);
 }
 
-/* Rastreo Section */
-.rastreo {
+/* Generador Códigos Section */
+.generador-codigos {
     background: white;
     padding: 80px 20px;
-    text-align: center;
 }
 
-.rastreo h2 {
-    font-size: 36px;
-    margin-bottom: 40px;
-    color: var(--secondary-color);
-}
-
-.search-box {
-    display: flex;
-    gap: 10px;
-    max-width: 600px;
-    margin: 0 auto 40px;
-}
-
-.search-box input {
-    flex: 1;
-    padding: 15px 20px;
-    border: 2px solid var(--border-color);
-    border-radius: 8px;
-    font-size: 16px;
-    transition: border-color 0.3s ease;
-}
-
-.search-box input:focus {
-    outline: none;
-    border-color: var(--primary-color);
-}
-
-.search-box button {
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    padding: 15px 40px;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.search-box button:hover {
-    background-color: #e55a2b;
-}
-
-/* Resultado Rastreo */
-.resultado-rastreo {
-    background: var(--light-bg);
-    padding: 40px;
-    border-radius: 12px;
-    max-width: 600px;
-    margin: 0 auto;
-    border-left: 5px solid var(--primary-color);
-}
-
-.estado-paquete h3 {
-    color: var(--secondary-color);
-    margin-bottom: 20px;
-}
-
-.timeline {
-    text-align: left;
-}
-
-.evento {
-    padding: 15px 0;
-    border-bottom: 1px solid var(--border-color);
-    position: relative;
-    padding-left: 30px;
-}
-
-.evento:before {
-    content: '●';
-    position: absolute;
-    left: 0;
-    color: var(--primary-color);
-    font-size: 20px;
-}
-
-.evento:last-child {
-    border-bottom: none;
-}
-
-.fecha {
-    display: block;
-    font-weight: bold;
-    color: var(--secondary-color);
-}
-
-.estado-texto {
-    margin-top: 5px;
-    color: #666;
-}
-
-/* Cotizador Section */
-.cotizador {
-    background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
-    padding: 80px 20px;
-}
-
-.cotizador h2 {
+.generador-codigos h2 {
     text-align: center;
     font-size: 36px;
     margin-bottom: 40px;
     color: var(--secondary-color);
 }
 
-.form-cotizador {
+.form-generador {
     background: white;
     padding: 40px;
     border-radius: 12px;
     max-width: 700px;
-    margin: 0 auto;
+    margin: 0 auto 40px;
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    border-left: 5px solid var(--primary-color);
 }
 
 .form-row {
@@ -305,131 +207,147 @@ body {
     background-color: #e55a2b;
 }
 
-.resultado-cotizacion {
-    background: white;
-    padding: 30px;
+.resultado-codigo {
+    background: var(--light-bg);
+    padding: 40px;
     border-radius: 12px;
-    max-width: 700px;
-    margin: 30px auto 0;
+    max-width: 600px;
+    margin: 0 auto 40px;
     text-align: center;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-    border: 2px solid var(--primary-color);
+    border-left: 5px solid var(--primary-color);
 }
 
-.resultado-cotizacion h3 {
+.codigo-generado h3 {
     color: var(--secondary-color);
-    margin-bottom: 15px;
-}
-
-.resultado-cotizacion p {
-    font-size: 24px;
-    color: var(--primary-color);
-    font-weight: bold;
     margin-bottom: 20px;
 }
 
-.checkout-button {
-    background-color: var(--secondary-color);
-    color: white;
+.codigo-generado svg {
+    margin: 20px 0;
+    max-width: 100%;
+}
+
+.codigo-texto {
+    font-weight: bold;
+    color: var(--primary-color);
+    margin: 15px 0;
+}
+
+.botones-accion {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.btn-descargar,
+.btn-agregar,
+.btn-excel,
+.btn-limpiar,
+.btn-eliminar {
+    padding: 10px 20px;
     border: none;
-    padding: 12px 30px;
-    border-radius: 8px;
-    font-size: 16px;
+    border-radius: 6px;
+    font-size: 14px;
     font-weight: bold;
     cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.checkout-button:hover {
-    background-color: #003d70;
-}
-
-/* Servicios Section */
-.servicios {
-    background: white;
-    padding: 80px 20px;
-}
-
-.servicios h2 {
-    text-align: center;
-    font-size: 36px;
-    margin-bottom: 50px;
-    color: var(--secondary-color);
-}
-
-.servicios-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 30px;
-}
-
-.servicio-card {
-    background: var(--light-bg);
-    padding: 30px;
-    border-radius: 12px;
-    text-align: center;
     transition: all 0.3s ease;
-    border-top: 4px solid var(--primary-color);
 }
 
-.servicio-card:hover {
-    transform: translateY(-10px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+.btn-descargar {
+    background-color: var(--primary-color);
+    color: white;
 }
 
-.servicio-card .icon {
-    font-size: 48px;
-    margin-bottom: 15px;
+.btn-descargar:hover {
+    background-color: #e55a2b;
+    transform: translateY(-2px);
 }
 
-.servicio-card h3 {
-    color: var(--secondary-color);
-    margin-bottom: 15px;
-    font-size: 20px;
+.btn-agregar {
+    background-color: var(--secondary-color);
+    color: white;
 }
 
-.servicio-card p {
-    color: #666;
-    line-height: 1.6;
+.btn-agregar:hover {
+    background-color: #003d70;
+    transform: translateY(-2px);
 }
 
-/* Sucursales Section */
-.sucursales {
-    background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
-    padding: 80px 20px;
+.btn-excel {
+    background-color: #27ae60;
+    color: white;
 }
 
-.sucursales h2 {
-    text-align: center;
-    font-size: 36px;
-    margin-bottom: 50px;
-    color: var(--secondary-color);
+.btn-excel:hover {
+    background-color: #229954;
+    transform: translateY(-2px);
 }
 
-.sucursales-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 30px;
+.btn-limpiar {
+    background-color: #e74c3c;
+    color: white;
 }
 
-.sucursal {
+.btn-limpiar:hover {
+    background-color: #c0392b;
+    transform: translateY(-2px);
+}
+
+.btn-eliminar {
+    background-color: #e74c3c;
+    color: white;
+    padding: 6px 12px;
+    font-size: 12px;
+}
+
+.btn-eliminar:hover {
+    background-color: #c0392b;
+}
+
+/* Tabla de Códigos */
+#listaCodigosSection {
     background: white;
-    padding: 30px;
+    padding: 40px;
     border-radius: 12px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    border-left: 4px solid var(--primary-color);
+    max-width: 1000px;
+    margin: 40px auto;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
 }
 
-.sucursal h4 {
+#listaCodigosSection h3 {
     color: var(--secondary-color);
-    margin-bottom: 10px;
-    font-size: 18px;
+    margin-bottom: 20px;
 }
 
-.sucursal p {
-    margin: 8px 0;
-    color: #666;
+.tabla-codigos {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.tabla-codigos th {
+    background-color: var(--secondary-color);
+    color: white;
+    padding: 15px;
+    text-align: left;
+    font-weight: bold;
+}
+
+.tabla-codigos td {
+    padding: 12px 15px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.tabla-codigos tr:hover {
+    background-color: var(--light-bg);
+}
+
+.botones-export {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
 }
 
 /* Contacto Section */
@@ -570,10 +488,6 @@ body {
         font-size: 32px;
     }
 
-    .search-box {
-        flex-direction: column;
-    }
-
     .form-row {
         grid-template-columns: 1fr;
     }
@@ -586,6 +500,27 @@ body {
         flex-direction: column;
         gap: 10px;
     }
+
+    .botones-accion,
+    .botones-export {
+        flex-direction: column;
+    }
+
+    .btn-descargar,
+    .btn-agregar,
+    .btn-excel,
+    .btn-limpiar {
+        width: 100%;
+    }
+
+    .tabla-codigos {
+        font-size: 14px;
+    }
+
+    .tabla-codigos th,
+    .tabla-codigos td {
+        padding: 10px;
+    }
 }
 
 @media (max-width: 480px) {
@@ -593,8 +528,7 @@ body {
         font-size: 24px;
     }
 
-    .servicios-grid,
-    .sucursales-grid {
-        grid-template-columns: 1fr;
+    .tabla-codigos {
+        font-size: 12px;
     }
 }

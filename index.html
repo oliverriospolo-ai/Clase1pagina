@@ -17,8 +17,7 @@
             <nav class="nav">
                 <ul>
                     <li><a href="#inicio">Inicio</a></li>
-                    <li><a href="#rastreo">Rastrear</a></li>
-                    <li><a href="#servicios">Servicios</a></li>
+                    <li><a href="#generador">Generador</a></li>
                     <li><a href="#contacto">Contacto</a></li>
                 </ul>
             </nav>
@@ -28,144 +27,64 @@
     <!-- Hero Section -->
     <section class="hero" id="inicio">
         <div class="container">
-            <h2>Envíos Rápidos y Seguros</h2>
-            <p>Conectamos tu negocio con tus clientes a nivel nacional e internacional</p>
-            <button class="cta-button">Comienza Ahora</button>
+            <h2>Genera Códigos de Barras Profesionales</h2>
+            <p>Solución rápida y eficiente para crear y administrar códigos de barras de tus productos</p>
+            <button class="cta-button">Comenzar Ahora</button>
         </div>
     </section>
 
-    <!-- Rastreo Section -->
-    <section class="rastreo" id="rastreo">
+    <!-- Generador de Códigos de Barras Section -->
+    <section class="generador-codigos" id="generador">
         <div class="container">
-            <h2>Rastrear tu Envío</h2>
-            <div class="search-box">
-                <input 
-                    type="text" 
-                    id="numeroGuia" 
-                    placeholder="Ingresa tu número de guía..." 
-                    maxlength="20"
-                >
-                <button onclick="rastrearPaquete()">Rastrear</button>
-            </div>
-            <div id="resultadoRastreo" class="resultado-rastreo" style="display: none;">
-                <div class="estado-paquete">
-                    <h3 id="numeroMostrado"></h3>
-                    <div class="timeline">
-                        <div class="evento">
-                            <span class="fecha">2026-06-11</span>
-                            <p class="estado-texto">Paquete entregado</p>
-                        </div>
-                        <div class="evento">
-                            <span class="fecha">2026-06-10</span>
-                            <p class="estado-texto">En camino a destino</p>
-                        </div>
-                        <div class="evento">
-                            <span class="fecha">2026-06-09</span>
-                            <p class="estado-texto">Recolectado de bodega</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Cotizador Section -->
-    <section class="cotizador" id="cotizar">
-        <div class="container">
-            <h2>Cotiza tu Envío</h2>
-            <form class="form-cotizador" onsubmit="cotizar(event)">
+            <h2>Generar Código de Barras</h2>
+            <form class="form-generador" onsubmit="generarCodigoBarras(event)">
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="origen">Origen (Ciudad):</label>
-                        <input type="text" id="origen" placeholder="Ej: México" required>
+                        <label for="nombre">Nombre del Producto:</label>
+                        <input type="text" id="nombre" placeholder="Ej: Paquete #001" required>
                     </div>
                     <div class="form-group">
-                        <label for="destino">Destino (Ciudad):</label>
-                        <input type="text" id="destino" placeholder="Ej: Guadalajara" required>
+                        <label for="codigo">Código del Producto:</label>
+                        <input type="text" id="codigo" placeholder="Ej: SG-2026-001" required>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="peso">Peso (kg):</label>
-                        <input type="number" id="peso" placeholder="0.5" step="0.1" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="servicio">Tipo de Servicio:</label>
-                        <select id="servicio" required>
-                            <option value="express">Express (24-48 hrs)</option>
-                            <option value="regular">Regular (3-5 días)</option>
-                            <option value="economico">Económico (7-10 días)</option>
-                        </select>
+                        <label for="descripcion">Descripción (opcional):</label>
+                        <input type="text" id="descripcion" placeholder="Detalles adicionales">
                     </div>
                 </div>
-                <button type="submit" class="submit-button">Cotizar Ahora</button>
+                <button type="submit" class="submit-button">Generar Código de Barras</button>
             </form>
-            <div id="resultadoCotizacion" class="resultado-cotizacion" style="display: none;">
-                <h3>Cotización</h3>
-                <p>Costo estimado: <span id="costoFinal"></span></p>
-                <button class="checkout-button">Proceder al Pago</button>
-            </div>
-        </div>
-    </section>
-
-    <!-- Servicios Section -->
-    <section class="servicios" id="servicios">
-        <div class="container">
-            <h2>Nuestros Servicios</h2>
-            <div class="servicios-grid">
-                <div class="servicio-card">
-                    <div class="icon">📦</div>
-                    <h3>Envíos Nacionales</h3>
-                    <p>Llega a cualquier parte del país en 24-48 horas con nuestro servicio express</p>
-                </div>
-                <div class="servicio-card">
-                    <div class="icon">🌍</div>
-                    <h3>Envíos Internacionales</h3>
-                    <p>Conectamos con más de 200 países. Seguimiento en tiempo real</p>
-                </div>
-                <div class="servicio-card">
-                    <div class="icon">🏪</div>
-                    <h3>Recolección en Tienda</h3>
-                    <p>Recogemos tus paquetes directamente en tu negocio</p>
-                </div>
-                <div class="servicio-card">
-                    <div class="icon">🔒</div>
-                    <h3>Seguros Especiales</h3>
-                    <p>Protege tus envíos con coberturas hasta $100,000 MXN</p>
-                </div>
-                <div class="servicio-card">
-                    <div class="icon">📱</div>
-                    <h3>App Móvil</h3>
-                    <p>Descarga nuestra app para rastrear en cualquier momento</p>
-                </div>
-                <div class="servicio-card">
-                    <div class="icon">💳</div>
-                    <h3>Planes Corporativos</h3>
-                    <p>Descuentos especiales para empresas y comercios</p>
+            <div id="resultadoCodigoBarras" class="resultado-codigo" style="display: none;">
+                <div class="codigo-generado">
+                    <h3 id="nombreProducto"></h3>
+                    <svg id="barcode"></svg>
+                    <p id="codigoTexto" class="codigo-texto"></p>
+                    <div class="botones-accion">
+                        <button class="btn-descargar" onclick="descargarCodigoBarras()">📥 Descargar Código</button>
+                        <button class="btn-agregar" onclick="agregarALista()">➕ Agregar a Lista</button>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
 
-    <!-- Sucursales Section -->
-    <section class="sucursales">
-        <div class="container">
-            <h2>Nuestras Sucursales</h2>
-            <div class="sucursales-grid">
-                <div class="sucursal">
-                    <h4>📍 Mexico D.F.</h4>
-                    <p>Av. Paseo de la Reforma 505</p>
-                    <p>Teléfono: +52 (55) 1234-5678</p>
-                </div>
-                <div class="sucursal">
-                    <h4>📍 Guadalajara</h4>
-                    <p>Calle López Mateos 1250</p>
-                    <p>Teléfono: +52 (33) 1234-5678</p>
-                </div>
-                <div class="sucursal">
-                    <h4>📍 Monterrey</h4>
-                    <p>Avenida Santa María 800</p>
-                    <p>Teléfono: +52 (81) 1234-5678</p>
+            <div id="listaCodigosSection" style="display: none;">
+                <h3>Códigos Generados</h3>
+                <table id="tablaCodigosBarras" class="tabla-codigos">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Código</th>
+                            <th>Descripción</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cuerpoTabla">
+                    </tbody>
+                </table>
+                <div class="botones-export">
+                    <button class="btn-excel" onclick="exportarAExcel()">📊 Descargar Excel</button>
+                    <button class="btn-limpiar" onclick="limpiarLista()">🗑️ Limpiar Lista</button>
                 </div>
             </div>
         </div>
@@ -178,9 +97,11 @@
             <div class="contacto-grid">
                 <div class="contacto-info">
                     <h3>Información de Contacto</h3>
-                    <p><strong>Teléfono:</strong> 1-800-SG-FOREVER (1-800-74-3367)</p>
-                    <p><strong>Email:</strong> contacto@sgforever.com.mx</p>
-                    <p><strong>Atención al Cliente:</strong> Lunes a Domingo 7am - 10pm</p>
+                    <p><strong>Teléfono:</strong> +51 (44) 123-4567</p>
+                    <p><strong>Email:</strong> contacto@sgforever.pe</p>
+                    <p><strong>Ubicación:</strong> Trujillo, La Libertad - Perú</p>
+                    <p><strong>Dirección:</strong> Av. España 2500, Trujillo 13001</p>
+                    <p><strong>Atención al Cliente:</strong> Lunes a Sábado 8am - 8pm</p>
                     <div class="redes-sociales">
                         <a href="#" title="Facebook">f</a>
                         <a href="#" title="Twitter">𝕏</a>
@@ -201,7 +122,7 @@
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
-            <p>&copy; 2026 SG FOREVER. Todos los derechos reservados.</p>
+            <p>&copy; 2026 SG FOREVER. Todos los derechos reservados. Trujillo, La Libertad - Perú</p>
             <div class="footer-links">
                 <a href="#">Términos de Servicio</a>
                 <a href="#">Política de Privacidad</a>
@@ -210,6 +131,10 @@
         </div>
     </footer>
 
+    <!-- Librería para generar códigos de barras -->
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+    <!-- Librería para generar Excel -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
