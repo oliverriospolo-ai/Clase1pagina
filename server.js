@@ -4,16 +4,16 @@ const path = require('path');
 
 const PORT = process.env.PORT || 3000;
 
-// Tipos MIME
+// Tipos MIME con charset UTF-8
 const mimeTypes = {
-    '.html': 'text/html',
-    '.css': 'text/css',
-    '.js': 'application/javascript',
-    '.json': 'application/json',
+    '.html': 'text/html; charset=utf-8',
+    '.css': 'text/css; charset=utf-8',
+    '.js': 'application/javascript; charset=utf-8',
+    '.json': 'application/json; charset=utf-8',
     '.png': 'image/png',
     '.jpg': 'image/jpg',
     '.gif': 'image/gif',
-    '.svg': 'image/svg+xml'
+    '.svg': 'image/svg+xml; charset=utf-8'
 };
 
 const server = http.createServer((req, res) => {
@@ -30,7 +30,7 @@ const server = http.createServer((req, res) => {
             if (err.code === 'ENOENT') {
                 // Archivo no encontrado - servir index.html para SPA
                 fs.readFile(path.join(__dirname, 'index.html'), (err, content) => {
-                    res.writeHead(200, { 'Content-Type': 'text/html' });
+                    res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
                     res.end(content, 'utf-8');
                 });
             } else {
