@@ -1,128 +1,218 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SG FOREVER - Paquetería Express</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <!-- Header -->
-    <header class="header">
-        <div class="container">
-            <div class="logo">
+    <!-- LOGIN PAGE -->
+    <div id="loginPage" class="page-container">
+        <div class="login-container">
+            <div class="login-box">
                 <h1>SG FOREVER</h1>
-                <p class="tagline">Tus paquetes, nuestro compromiso</p>
+                <p class="subtitle">Sistema de Gestión de Paquetería</p>
+                
+                <form id="loginForm" onsubmit="handleLogin(event)">
+                    <div class="form-group">
+                        <label for="usuario">Usuario:</label>
+                        <input type="text" id="usuario" name="usuario" placeholder="Ingresa tu usuario" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="contrasena">Contraseña:</label>
+                        <input type="password" id="contrasena" name="contrasena" placeholder="Ingresa tu contraseña" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="rol">Selecciona tu rol:</label>
+                        <select id="rol" name="rol" required>
+                            <option value="">-- Selecciona un rol --</option>
+                            <option value="gerente">Gerente General</option>
+                            <option value="admin">Administrador</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="btn-login">Iniciar Sesión</button>
+                </form>
+                
+                <p class="login-hint">Demo: Ingresa cualquier usuario y contraseña</p>
             </div>
-            <nav class="nav">
-                <ul>
-                    <li><a href="#inicio">Inicio</a></li>
-                    <li><a href="#generador">Generador</a></li>
-                    <li><a href="#contacto">Contacto</a></li>
-                </ul>
-            </nav>
         </div>
-    </header>
+    </div>
 
-    <!-- Hero Section -->
-    <section class="hero" id="inicio">
-        <div class="container">
-            <h2>Genera Códigos de Barras Profesionales</h2>
-            <p>Solución rápida y eficiente para crear y administrar códigos de barras de tus productos</p>
-            <button class="cta-button">Comenzar Ahora</button>
-        </div>
-    </section>
+    <!-- GERENTE GENERAL DASHBOARD -->
+    <div id="gerentePage" class="page-container" style="display: none;">
+        <header class="dashboard-header">
+            <div class="header-content">
+                <h1>SG FOREVER - Dashboard Gerente General</h1>
+                <button class="btn-logout" onclick="logout()">Cerrar Sesión</button>
+            </div>
+        </header>
 
-    <!-- Generador de Códigos de Barras Section -->
-    <section class="generador-codigos" id="generador">
-        <div class="container">
-            <h2>Generar Código de Barras</h2>
-            <form class="form-generador" onsubmit="generarCodigoBarras(event)">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="nombre">Nombre del Producto:</label>
-                        <input type="text" id="nombre" placeholder="Ej: Paquete #001" required>
+        <main class="dashboard-main">
+            <div class="metrics-container">
+                <h2>Métricas de Pedidos - Hoy</h2>
+                
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-icon">📤</div>
+                        <div class="metric-content">
+                            <h3>Enviados Hoy</h3>
+                            <p class="metric-number" id="metricaEnviados">0</p>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="codigo">Código del Producto:</label>
-                        <input type="text" id="codigo" placeholder="Ej: SG-2026-001" required>
+
+                    <div class="metric-card">
+                        <div class="metric-icon">⏳</div>
+                        <div class="metric-content">
+                            <h3>Pendientes</h3>
+                            <p class="metric-number" id="metricaPendientes">0</p>
+                        </div>
                     </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="descripcion">Descripción (opcional):</label>
-                        <input type="text" id="descripcion" placeholder="Detalles adicionales">
+
+                    <div class="metric-card">
+                        <div class="metric-icon">❌</div>
+                        <div class="metric-content">
+                            <h3>No Enviados</h3>
+                            <p class="metric-number" id="metricaNoEnviados">0</p>
+                        </div>
                     </div>
-                </div>
-                <button type="submit" class="submit-button">Generar Código de Barras</button>
-            </form>
-            <div id="resultadoCodigoBarras" class="resultado-codigo" style="display: none;">
-                <div class="codigo-generado">
-                    <h3 id="nombreProducto"></h3>
-                    <svg id="barcode"></svg>
-                    <p id="codigoTexto" class="codigo-texto"></p>
-                    <div class="botones-accion">
-                        <button class="btn-descargar" onclick="descargarCodigoBarras()">📥 Descargar Código</button>
-                        <button class="btn-agregar" onclick="agregarALista()">➕ Agregar a Lista</button>
+
+                    <div class="metric-card">
+                        <div class="metric-icon">🔄</div>
+                        <div class="metric-content">
+                            <h3>Devueltos</h3>
+                            <p class="metric-number" id="metricaDevueltos">0</p>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div id="listaCodigosSection" style="display: none;">
-                <h3>Códigos Generados</h3>
-                <table id="tablaCodigosBarras" class="tabla-codigos">
+            <div class="table-container">
+                <h2>Registro de Pedidos</h2>
+                <table class="pedidos-table">
                     <thead>
                         <tr>
-                            <th>Nombre</th>
-                            <th>Código</th>
-                            <th>Descripción</th>
+                            <th>Número de Guía</th>
+                            <th>Cliente</th>
+                            <th>Destino</th>
+                            <th>Peso</th>
+                            <th>Estado</th>
+                            <th>Fecha</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pedidosTableBody">
+                        <!-- Datos se cargan dinámicamente -->
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <!-- ADMINISTRADOR PANEL -->
+    <div id="adminPage" class="page-container" style="display: none;">
+        <header class="dashboard-header">
+            <div class="header-content">
+                <h1>SG FOREVER - Panel Administrador</h1>
+                <button class="btn-logout" onclick="logout()">Cerrar Sesión</button>
+            </div>
+        </header>
+
+        <main class="admin-main">
+            <div class="form-section">
+                <h2>Ingresar Nuevo Registro de Paquete</h2>
+                
+                <form id="registroForm" onsubmit="agregarRegistro(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="numeroGuia">Número de Guía:</label>
+                            <input type="text" id="numeroGuia" name="numeroGuia" placeholder="Ej: SG-2024-00001" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="cliente">Nombre del Cliente:</label>
+                            <input type="text" id="cliente" name="cliente" placeholder="Nombre completo" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="destino">Destino:</label>
+                            <input type="text" id="destino" name="destino" placeholder="Ciudad/Provincia" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="peso">Peso (kg):</label>
+                            <input type="number" id="peso" name="peso" step="0.1" placeholder="0.0" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="estado">Estado del Paquete:</label>
+                            <select id="estado" name="estado" required>
+                                <option value="">-- Selecciona el estado --</option>
+                                <option value="enviado">Enviado Hoy</option>
+                                <option value="pendiente">Pendiente</option>
+                                <option value="no_enviado">No Enviado</option>
+                                <option value="devuelto">Devuelto</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="fecha">Fecha:</label>
+                            <input type="date" id="fecha" name="fecha" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-submit">Guardar Registro</button>
+                </form>
+
+                <div id="mensaje" class="mensaje" style="display: none;"></div>
+            </div>
+
+            <div class="registros-section">
+                <h2>Registros Ingresados</h2>
+                <table class="registros-table">
+                    <thead>
+                        <tr>
+                            <th>Número de Guía</th>
+                            <th>Cliente</th>
+                            <th>Destino</th>
+                            <th>Peso</th>
+                            <th>Estado</th>
+                            <th>Fecha</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
-                    <tbody id="cuerpoTabla">
+                    <tbody id="registrosTableBody">
+                        <!-- Datos se cargan dinámicamente -->
                     </tbody>
                 </table>
-                <div class="botones-export">
-                    <button class="btn-excel" onclick="exportarAExcel()">📊 Descargar Excel</button>
-                    <button class="btn-limpiar" onclick="limpiarLista()">🗑️ Limpiar Lista</button>
-                </div>
             </div>
-        </div>
-    </section>
+        </main>
+    </div>
 
-    <!-- Contacto Section -->
-    <section class="contacto" id="contacto">
-        <div class="container">
-            <h2>Contacto</h2>
-            <div class="contacto-grid">
-                <div class="contacto-info">
-                    <h3>Información de Contacto</h3>
-                    <p><strong>Teléfono:</strong> +51 (44) 123-4567</p>
-                    <p><strong>Email:</strong> contacto@sgforever.pe</p>
-                    <p><strong>Ubicación:</strong> Trujillo, La Libertad - Perú</p>
-                    <p><strong>Dirección:</strong> Av. España 2500, Trujillo 13001</p>
-                    <p><strong>Atención al Cliente:</strong> Lunes a Sábado 8am - 8pm</p>
-                    <div class="redes-sociales">
-                        <a href="#" title="Facebook">f</a>
-                        <a href="#" title="Twitter">𝕏</a>
-                        <a href="#" title="Instagram">📷</a>
-                        <a href="#" title="WhatsApp">💬</a>
-                    </div>
-                </div>
-                <form class="contacto-form" onsubmit="enviarMensaje(event)">
-                    <input type="text" placeholder="Tu nombre" required>
-                    <input type="email" placeholder="Tu email" required>
-                    <textarea placeholder="Tu mensaje" rows="5" required></textarea>
-                    <button type="submit">Enviar</button>
-                </form>
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Contacto</h3>
+                <p><strong>Email:</strong> gerenciasgforever@gmail.com</p>
+                <p><strong>Teléfono:</strong> 965923032</p>
+                <p><strong>Dirección:</strong> Av Pablo Casals 187 Urb Mochica</p>
+                <p><strong>Ubicación:</strong> Trujillo, La Libertad - Perú</p>
+            </div>
+            <div class="footer-section">
+                <h3>Horarios</h3>
+                <p>Lunes a Viernes: 8:00 AM - 6:00 PM</p>
+                <p>Sábados: 9:00 AM - 1:00 PM</p>
+                <p>Domingos: Cerrado</p>
+            </div>
+            <div class="footer-section">
+                <h3>&copy; 2024 SG FOREVER</h3>
+                <p>Todos los derechos reservados</p>
             </div>
         </div>
-    </section>
+    </footer>
 
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
-            <p>&copy; 2026 SG FOREVER. Todos los derechos reservados. Trujillo, La Libertad - Perú</p>
+            <p>&copy; 2026 SG FOREVER. Todos los derechos reservados.</p>
             <div class="footer-links">
                 <a href="#">Términos de Servicio</a>
                 <a href="#">Política de Privacidad</a>
@@ -131,10 +221,6 @@
         </div>
     </footer>
 
-    <!-- Librería para generar códigos de barras -->
-    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
-    <!-- Librería para generar Excel -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

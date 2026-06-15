@@ -1,249 +1,300 @@
-// Array para almacenar códigos generados
-let codigosGenerados = [];
+// ==================================
+// VARIABLES GLOBALES
+// ==================================
+let pedidosData = [];
+let usuarioActual = null;
+let rolActual = null;
 
-// Función para generar código de barras
-function generarCodigoBarras(event) {
+// Datos de ejemplo iniciales
+const datosEjemplo = [
+    {
+        id: 1,
+        numeroGuia: 'SG-2024-00001',
+        cliente: 'Juan Pérez',
+        destino: 'Lima',
+        peso: 2.5,
+        estado: 'enviado',
+        fecha: new Date().toISOString().split('T')[0]
+    },
+    {
+        id: 2,
+        numeroGuia: 'SG-2024-00002',
+        cliente: 'María García',
+        destino: 'Arequipa',
+        peso: 1.0,
+        estado: 'pendiente',
+        fecha: new Date().toISOString().split('T')[0]
+    },
+    {
+        id: 3,
+        numeroGuia: 'SG-2024-00003',
+        cliente: 'Carlos López',
+        destino: 'Trujillo',
+        peso: 3.5,
+        estado: 'no_enviado',
+        fecha: new Date().toISOString().split('T')[0]
+    },
+    {
+        id: 4,
+        numeroGuia: 'SG-2024-00004',
+        cliente: 'Ana Martínez',
+        destino: 'Piura',
+        peso: 0.8,
+        estado: 'devuelto',
+        fecha: new Date().toISOString().split('T')[0]
+    }
+];
+
+// Inicializar datos
+pedidosData = JSON.parse(JSON.stringify(datosEjemplo));
+
+// ==================================
+// FUNCIONES DE AUTENTICACIÓN
+// ==================================
+function handleLogin(event) {
     event.preventDefault();
     
-    const nombre = document.getElementById('nombre').value.trim();
-    const codigo = document.getElementById('codigo').value.trim();
-    const descripcion = document.getElementById('descripcion').value.trim();
+    const usuario = document.getElementById('usuario').value;
+    const contrasena = document.getElementById('contrasena').value;
+    const rol = document.getElementById('rol').value;
     
-    if (!nombre || !codigo) {
-        alert('Por favor completa nombre y código');
+    if (!usuario || !contrasena || !rol) {
+        alert('Por favor completa todos los campos');
         return;
     }
     
-    // Mostrar resultado
-    const resultadoDiv = document.getElementById('resultadoCodigoBarras');
-    const nombreProducto = document.getElementById('nombreProducto');
-    const codigoTexto = document.getElementById('codigoTexto');
+    // Autenticación simulada (aceptar cualquier usuario/contraseña)
+    usuarioActual = usuario;
+    rolActual = rol;
     
-    nombreProducto.textContent = nombre;
-    codigoTexto.textContent = `Código: ${codigo}`;
-    resultadoDiv.style.display = 'block';
-    
-    // Generar código de barras con JsBarcode
-    try {
-        JsBarcode("#barcode", codigo, {
-            format: "CODE128",
-            width: 2,
-            height: 100,
-            displayValue: true
-        });
-    } catch (e) {
-        alert('Error al generar código de barras');
-        console.error(e);
-    }
-    
-    // Scroll al resultado
-    resultadoDiv.scrollIntoView({ behavior: 'smooth' });
+    mostrarPantalla(rol);
+    document.getElementById('loginForm').reset();
 }
 
-// Función para agregar a lista
-function agregarALista() {
-    const nombre = document.getElementById('nombre').value.trim();
-    const codigo = document.getElementById('codigo').value.trim();
-    const descripcion = document.getElementById('descripcion').value.trim();
+function logout() {
+    usuarioActual = null;
+    rolActual = null;
     
-    if (!nombre || !codigo) {
-        alert('Por favor completa nombre y código');
-        return;
+    // Ocultar todos los dashboards
+    document.getElementById('gerentePage').style.display = 'none';
+    document.getElementById('adminPage').style.display = 'none';
+    
+    // Mostrar login
+    document.getElementById('loginPage').style.display = 'flex';
+    
+    // Limpiar formularios
+    document.getElementById('loginForm').reset();
+    document.getElementById('registroForm').reset();
+}
+
+function mostrarPantalla(rol) {
+    // Ocultar login
+    document.getElementById('loginPage').style.display = 'none';
+    
+    if (rol === 'gerente') {
+        // Mostrar dashboard del gerente
+        document.getElementById('gerentePage').style.display = 'flex';
+        document.getElementById('adminPage').style.display = 'none';
+        actualizarDashboardGerente();
+    } else if (rol === 'admin') {
+        // Mostrar panel del administrador
+        document.getElementById('adminPage').style.display = 'flex';
+        document.getElementById('gerentePage').style.display = 'none';
+        actualizarTablaRegistros();
     }
+}
+
+// ==================================
+// FUNCIONES DASHBOARD GERENTE
+// ==================================
+function actualizarDashboardGerente() {
+    calcularMetricas();
+    actualizarTablaPedidos();
+}
+
+function calcularMetricas() {
+    const hoy = new Date().toISOString().split('T')[0];
     
-    // Agregar a array
-    codigosGenerados.push({
-        nombre: nombre,
-        codigo: codigo,
-        descripcion: descripcion,
-        fecha: new Date().toLocaleDateString('es-PE')
+    // Contar por estado del día actual
+    let enviados = 0;
+    let pendientes = 0;
+    let noEnviados = 0;
+    let devueltos = 0;
+    
+    pedidosData.forEach(pedido => {
+        if (pedido.fecha === hoy) {
+            if (pedido.estado === 'enviado') {
+                enviados++;
+            } else if (pedido.estado === 'pendiente') {
+                pendientes++;
+            } else if (pedido.estado === 'no_enviado') {
+                noEnviados++;
+            } else if (pedido.estado === 'devuelto') {
+                devueltos++;
+            }
+        }
     });
     
-    // Actualizar tabla
-    actualizarTabla();
-    
-    // Mostrar sección de lista
-    document.getElementById('listaCodigosSection').style.display = 'block';
-    
-    // Limpiar formulario
-    document.getElementById('nombre').value = '';
-    document.getElementById('codigo').value = '';
-    document.getElementById('descripcion').value = '';
-    
-    alert('✓ Código agregado a la lista');
+    // Actualizar en el DOM
+    document.getElementById('metricaEnviados').textContent = enviados;
+    document.getElementById('metricaPendientes').textContent = pendientes;
+    document.getElementById('metricaNoEnviados').textContent = noEnviados;
+    document.getElementById('metricaDevueltos').textContent = devueltos;
 }
 
-// Función para actualizar tabla
-function actualizarTabla() {
-    const tbody = document.getElementById('cuerpoTabla');
+function actualizarTablaPedidos() {
+    const tbody = document.getElementById('pedidosTableBody');
     tbody.innerHTML = '';
     
-    codigosGenerados.forEach((item, index) => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>${item.nombre}</td>
-            <td>${item.codigo}</td>
-            <td>${item.descripcion}</td>
-            <td>
-                <button class="btn-eliminar" onclick="eliminarDeLista(${index})">🗑️</button>
-            </td>
+    // Mostrar solo pedidos de hoy
+    const hoy = new Date().toISOString().split('T')[0];
+    const pedidosHoy = pedidosData.filter(p => p.fecha === hoy);
+    
+    if (pedidosHoy.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 20px;">No hay pedidos registrados para hoy</td></tr>';
+        return;
+    }
+    
+    pedidosHoy.forEach(pedido => {
+        const fila = document.createElement('tr');
+        fila.innerHTML = `
+            <td>${pedido.numeroGuia}</td>
+            <td>${pedido.cliente}</td>
+            <td>${pedido.destino}</td>
+            <td>${pedido.peso} kg</td>
+            <td>${obtenerEtiquetaEstado(pedido.estado)}</td>
+            <td>${pedido.fecha}</td>
         `;
-        tbody.appendChild(row);
+        tbody.appendChild(fila);
     });
 }
 
-// Función para eliminar de lista
-function eliminarDeLista(index) {
-    codigosGenerados.splice(index, 1);
-    actualizarTabla();
-    
-    if (codigosGenerados.length === 0) {
-        document.getElementById('listaCodigosSection').style.display = 'none';
-    }
-}
-
-// Función para limpiar lista
-function limpiarLista() {
-    if (confirm('¿Deseas limpiar toda la lista?')) {
-        codigosGenerados = [];
-        document.getElementById('listaCodigosSection').style.display = 'none';
-        alert('Lista limpiada');
-    }
-}
-
-// Función para descargar código de barras como imagen
-function descargarCodigoBarras() {
-    const svg = document.getElementById('barcode');
-    const codigo = document.getElementById('codigo').value;
-    
-    if (!svg.querySelector('svg')) {
-        alert('Primero genera un código de barras');
-        return;
-    }
-    
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    const svgData = new XMLSerializer().serializeToString(svg);
-    const img = new Image();
-    
-    img.onload = function() {
-        canvas.width = img.width;
-        canvas.height = img.height;
-        ctx.drawImage(img, 0, 0);
-        const link = document.createElement('a');
-        link.href = canvas.toDataURL('image/png');
-        link.download = `codigo_barras_${codigo}.png`;
-        link.click();
-        alert('✓ Código de barras descargado');
-    };
-    
-    img.src = 'data:image/svg+xml;base64,' + btoa(svgData);
-}
-
-// Función para exportar a Excel
-function exportarAExcel() {
-    if (codigosGenerados.length === 0) {
-        alert('No hay códigos para exportar');
-        return;
-    }
-    
-    // Crear libro de trabajo
-    const wb = XLSX.utils.book_new();
-    
-    // Convertir datos a hoja de cálculo
-    const ws = XLSX.utils.json_to_sheet(codigosGenerados, {
-        header: ['nombre', 'codigo', 'descripcion', 'fecha'],
-        defval: ''
-    });
-    
-    // Ajustar ancho de columnas
-    ws['!cols'] = [
-        { wch: 30 },
-        { wch: 20 },
-        { wch: 40 },
-        { wch: 15 }
-    ];
-    
-    // Agregar hoja al libro
-    XLSX.utils.book_append_sheet(wb, ws, 'Códigos de Barras');
-    
-    // Descargar archivo
-    XLSX.writeFile(wb, `SG_FOREVER_Codigos_${new Date().toLocaleDateString('es-PE')}.xlsx`);
-    alert('✓ Archivo Excel descargado');
-}
-
-// Agregar funcionalidad al botón CTA
-document.addEventListener('DOMContentLoaded', function() {
-    const ctaButton = document.querySelector('.cta-button');
-    
-    if (ctaButton) {
-        ctaButton.addEventListener('click', function() {
-            document.getElementById('generador').scrollIntoView({ behavior: 'smooth' });
-        });
-    }
-});
-
-// Animación de entrada para elementos al hacer scroll
-const observerOptions = {
-    threshold: 0.1,
-    rootMargin: '0px 0px -100px 0px'
-};
-
-const observer = new IntersectionObserver(function(entries) {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.style.opacity = '1';
-            entry.target.style.transform = 'translateY(0)';
-        }
-    });
-}, observerOptions);
-
-// Aplicar observer a elementos
-document.addEventListener('DOMContentLoaded', function() {
-    const elements = document.querySelectorAll('.servicio-card, .sucursal, .resultado-codigo');
-    elements.forEach(el => {
-        if (el) {
-            el.style.opacity = '0';
-            el.style.transform = 'translateY(20px)';
-            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-            observer.observe(el);
-        }
-    });
-});
-
-// Función para validar email
-function validarEmail(email) {
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return regex.test(email);
-}
-
-// Agregar validación adicional al formulario de contacto
-document.addEventListener('DOMContentLoaded', function() {
-    const contactoForm = document.querySelector('.contacto-form');
-    
-    if (contactoForm) {
-        contactoForm.addEventListener('submit', function(event) {
-            const email = this.querySelector('input[type="email"]').value;
-            
-            if (!validarEmail(email)) {
-                event.preventDefault();
-                alert('Por favor ingresa un email válido');
-            }
-        });
-    }
-});
-
-// Función para enviar mensaje de contacto
-function enviarMensaje(event) {
+// ==================================
+// FUNCIONES PANEL ADMINISTRADOR
+// ==================================
+function agregarRegistro(event) {
     event.preventDefault();
     
-    const form = event.target;
-    const nombre = form.querySelector('input[type="text"]').value;
-    const email = form.querySelector('input[type="email"]').value;
-    const mensaje = form.querySelector('textarea').value;
+    const numeroGuia = document.getElementById('numeroGuia').value;
+    const cliente = document.getElementById('cliente').value;
+    const destino = document.getElementById('destino').value;
+    const peso = parseFloat(document.getElementById('peso').value);
+    const estado = document.getElementById('estado').value;
+    const fecha = document.getElementById('fecha').value;
     
-    alert(`¡Gracias ${nombre}! Tu mensaje ha sido enviado correctamente.\nNos pondremos en contacto a ${email} pronto.`);
-    form.reset();
+    // Validar que el número de guía no exista
+    if (pedidosData.some(p => p.numeroGuia === numeroGuia)) {
+        mostrarMensaje('Este número de guía ya existe', 'error');
+        return;
+    }
+    
+    // Crear nuevo registro
+    const nuevoRegistro = {
+        id: pedidosData.length + 1,
+        numeroGuia,
+        cliente,
+        destino,
+        peso,
+        estado,
+        fecha
+    };
+    
+    // Agregar a los datos
+    pedidosData.push(nuevoRegistro);
+    
+    // Mostrar mensaje de éxito
+    mostrarMensaje('Registro guardado exitosamente', 'exito');
+    
+    // Limpiar formulario
+    document.getElementById('registroForm').reset();
+    
+    // Establecer fecha actual por defecto
+    document.getElementById('fecha').valueAsDate = new Date();
+    
+    // Actualizar tabla de registros
+    actualizarTablaRegistros();
+    
+    // Si el gerente está conectado, actualizar su dashboard
+    if (rolActual === 'gerente') {
+        actualizarDashboardGerente();
+    }
 }
 
-console.log('SG FOREVER - Generador de Códigos de Barras Cargado Exitosamente');
+function eliminarRegistro(id) {
+    if (confirm('¿Está seguro de que desea eliminar este registro?')) {
+        pedidosData = pedidosData.filter(p => p.id !== id);
+        actualizarTablaRegistros();
+        mostrarMensaje('Registro eliminado exitosamente', 'exito');
+        
+        // Si el gerente está conectado, actualizar su dashboard
+        if (rolActual === 'gerente') {
+            actualizarDashboardGerente();
+        }
+    }
+}
+
+function actualizarTablaRegistros() {
+    const tbody = document.getElementById('registrosTableBody');
+    tbody.innerHTML = '';
+    
+    if (pedidosData.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 20px;">No hay registros ingresados</td></tr>';
+        return;
+    }
+    
+    // Mostrar en orden inverso (más nuevos primero)
+    [...pedidosData].reverse().forEach(registro => {
+        const fila = document.createElement('tr');
+        fila.innerHTML = `
+            <td>${registro.numeroGuia}</td>
+            <td>${registro.cliente}</td>
+            <td>${registro.destino}</td>
+            <td>${registro.peso} kg</td>
+            <td>${obtenerEtiquetaEstado(registro.estado)}</td>
+            <td>${registro.fecha}</td>
+            <td>
+                <button class="btn-delete" onclick="eliminarRegistro(${registro.id})">Eliminar</button>
+            </td>
+        `;
+        tbody.appendChild(fila);
+    });
+}
+
+// ==================================
+// FUNCIONES AUXILIARES
+// ==================================
+function obtenerEtiquetaEstado(estado) {
+    const estados = {
+        'enviado': '📤 Enviado Hoy',
+        'pendiente': '⏳ Pendiente',
+        'no_enviado': '❌ No Enviado',
+        'devuelto': '🔄 Devuelto'
+    };
+    return estados[estado] || estado;
+}
+
+function mostrarMensaje(texto, tipo) {
+    const mensajeDiv = document.getElementById('mensaje');
+    mensajeDiv.textContent = texto;
+    mensajeDiv.className = 'mensaje ' + tipo;
+    mensajeDiv.style.display = 'block';
+    
+    // Ocultar el mensaje después de 4 segundos
+    setTimeout(() => {
+        mensajeDiv.style.display = 'none';
+    }, 4000);
+}
+
+// ==================================
+// INICIALIZACIÓN
+// ==================================
+document.addEventListener('DOMContentLoaded', function() {
+    // Establecer fecha actual por defecto en el input de fecha
+    const inputFecha = document.getElementById('fecha');
+    if (inputFecha) {
+        const hoy = new Date().toISOString().split('T')[0];
+        inputFecha.value = hoy;
+    }
+    
+    console.log('SG FOREVER - Sistema de Gestión de Paquetería Cargado Exitosamente');
+});
